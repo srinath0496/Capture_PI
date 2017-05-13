@@ -19,7 +19,7 @@ void main()
             getchar();
             spi_select(CS1);
             spi_rdwr();
-            spi_deselect(CS1);
+            //spi_deselect(CS1);
     }
 }
 
