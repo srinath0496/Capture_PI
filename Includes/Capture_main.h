@@ -1,4 +1,4 @@
-#include "types.h"
+#include "typedef.h"
 
 UINT_8 bcm_driver_init();
 UINT_8 spi_select(UINT_8 chip_sel);

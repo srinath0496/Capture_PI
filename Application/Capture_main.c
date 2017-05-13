@@ -54,5 +54,5 @@ UINT_8 bcm_driver_init()
 
         }
     }
-    return 0;
+    //return 0;
 }
