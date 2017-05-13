@@ -4,6 +4,7 @@
 #include "bcm2835.h"
 void main()
 {
+    UINT_8 recv_buf;
     printf("Ram Medical Monitors\n");
     /* BCM driver Initialise*/
     if(bcm_driver_init())
@@ -17,9 +18,11 @@ void main()
         {
             printf("Press any key to write\n");
             getchar();
-            spi_select(CS1);
-            spi_rdwr();
+            //spi_select(CS1);
+            //spi_rdwr();
             //spi_deselect(CS1);
+            recv_buf = bcm2835_spi_transfer(0x00);
+            printf("The Receive value is %X\n",recv_buf);
     }
 }
 
@@ -51,9 +54,4 @@ UINT_8 bcm_driver_init()
         }
     }
     return 0;
-}
-
-UINT_8 spi_select(UINT_8 chip_sel)
-{
-    bcm2835_spi_
 }
