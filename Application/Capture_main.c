@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include<string.h>
 #include "bcm2835.h"
+#include "typedef.h"
 void main()
 {
     UINT_8 recv_buf;
