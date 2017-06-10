@@ -99,7 +99,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_HTAMCGTest_OBJECTS = Capture_main.$(OBJEXT) bcm2835.$(OBJEXT)
+am_HTAMCGTest_OBJECTS = Capture_main.$(OBJEXT) bcm2835.$(OBJEXT) \
+	ads1298.$(OBJEXT)
 HTAMCGTest_OBJECTS = $(am_HTAMCGTest_OBJECTS)
 HTAMCGTest_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
@@ -158,12 +159,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/bubble/Bedside_mon/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/bubble/Ram_Medical/Capture_PI/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/bubble/Bedside_mon/missing autoconf
-AUTOHEADER = ${SHELL} /home/bubble/Bedside_mon/missing autoheader
-AUTOMAKE = ${SHELL} /home/bubble/Bedside_mon/missing automake-1.15
+AUTOCONF = ${SHELL} /home/bubble/Ram_Medical/Capture_PI/missing autoconf
+AUTOHEADER = ${SHELL} /home/bubble/Ram_Medical/Capture_PI/missing autoheader
+AUTOMAKE = ${SHELL} /home/bubble/Ram_Medical/Capture_PI/missing automake-1.15
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -188,7 +189,7 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/bubble/Bedside_mon/missing makeinfo
+MAKEINFO = ${SHELL} /home/bubble/Ram_Medical/Capture_PI/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = capture
@@ -204,10 +205,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 0.1
-abs_builddir = /home/bubble/Bedside_mon/Application
-abs_srcdir = /home/bubble/Bedside_mon/Application
-abs_top_builddir = /home/bubble/Bedside_mon
-abs_top_srcdir = /home/bubble/Bedside_mon
+abs_builddir = /home/bubble/Ram_Medical/Capture_PI/Application
+abs_srcdir = /home/bubble/Ram_Medical/Capture_PI/Application
+abs_top_builddir = /home/bubble/Ram_Medical/Capture_PI
+abs_top_srcdir = /home/bubble/Ram_Medical/Capture_PI
 ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
@@ -226,7 +227,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/bubble/Bedside_mon/install-sh
+install_sh = ${SHELL} /home/bubble/Ram_Medical/Capture_PI/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -247,7 +248,7 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-HTAMCGTest_SOURCES = Capture_main.c bcm2835.c
+HTAMCGTest_SOURCES = Capture_main.c bcm2835.c ads1298.c
 INCLUDES = -I../Includes
 all: all-am
 
@@ -336,6 +337,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/Capture_main.Po
+include ./$(DEPDIR)/ads1298.Po
 include ./$(DEPDIR)/bcm2835.Po
 
 .c.o:

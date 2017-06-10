@@ -7,6 +7,7 @@
 void main()
 {
     UINT_8 recv_buf;
+    UINT_8 option,chset;
     printf("Ram Medical Monitors\n");
     /* BCM driver Initialise*/
     if(bcm_driver_init())
@@ -22,21 +23,45 @@ void main()
 
         while(1)
         {
-            printf("Press any key to write\n");
-            getchar();
-            //spi_select(CS1);
-            //spi_rdwr();
-            //spi_deselect(CS1);
-            bcm2835_gpio_clr(RPI_GPIO_P1_22); //CS1
-            bcm2835_spi_transfer(0x20);
-            //printf("The Receive value is %X\n",recv_buf);
-            bcm2835_delayMicroseconds(5);
-            recv_buf =  bcm2835_spi_transfer(0x00);
-            bcm2835_delayMicroseconds(5);
-            recv_buf =  bcm2835_spi_transfer(0x00);
-            printf("The Receive value is %X\n",recv_buf);
-            bcm2835_delayMicroseconds(1);
-            bcm2835_gpio_set(RPI_GPIO_P1_22); //CS1
+            printf("Main Menu\n");
+            printf("1. Device ID\n2.Configure Channel\n3.Start SPI_START\n4.Stop SPI_START\n5.Read Channel Data\n6.Exit\n");
+            scanf("%d",&option);
+            switch(option)
+            {
+                case 1:
+                            printf("The Dev ID is %X\n",spi_read_byte(0x00));
+                            break;
+                case 2:
+                            spi_write_byte(CONFIG1,SAMP_500_SPS);
+                            bcm2835_delay(1);
+                            spi_write_byte(CONFIG2,0x33);
+                            bcm2835_delay(1000);
+                            //spi_write_byte(CONFIG2,0xA3);
+                                spi_write_byte(CH1SET,0x05);
+                                chset = spi_read_byte(0x12);
+                                printf("The read Channel 1 is %x\n",chset);
+                                chset = spi_read_byte(0x13);
+                                printf("The read Channel 1 is %x\n",chset);
+                            break;
+                case 3:
+                            bcm2835_gpio_set(RPI_GPIO_P1_18);  //SPI_START
+                            bcm2835_delay(5);
+                            break;
+                case 4:
+                            bcm2835_gpio_clr(RPI_GPIO_P1_18);  //SPI_START
+                            bcm2835_delay(5);
+                            break;
+                case 5:
+                            spi_read_data();
+                            break;
+                    case 6:
+                                bcm2835_close();
+                                exit(1);
+                    case 7:
+
+                default:
+                            break;
+            }
         }
     }
 }
@@ -103,10 +128,7 @@ UINT_8 ads1298_gpio_init()
 
 UINT_8 ads1298_init()
 {
-    bcm2835_gpio_clr(RPI_GPIO_P1_22); //CS1
-    bcm2835_spi_transfer(0x11);
+    spi_send_cmd(SDATAC);
     bcm2835_delay(10);
-    bcm2835_gpio_set(RPI_GPIO_P1_22); //CS1
-    //printf("The read ID is %X\n",bcm2835_spi_transfer(0x20));
     return 0;
 }

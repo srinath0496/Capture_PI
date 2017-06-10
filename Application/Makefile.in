@@ -99,7 +99,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_HTAMCGTest_OBJECTS = Capture_main.$(OBJEXT) bcm2835.$(OBJEXT)
+am_HTAMCGTest_OBJECTS = Capture_main.$(OBJEXT) bcm2835.$(OBJEXT) \
+	ads1298.$(OBJEXT)
 HTAMCGTest_OBJECTS = $(am_HTAMCGTest_OBJECTS)
 HTAMCGTest_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -247,7 +248,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-HTAMCGTest_SOURCES = Capture_main.c bcm2835.c
+HTAMCGTest_SOURCES = Capture_main.c bcm2835.c ads1298.c
 INCLUDES = -I../Includes
 all: all-am
 
@@ -336,6 +337,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Capture_main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ads1298.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bcm2835.Po@am__quote@
 
 .c.o:
