@@ -38,29 +38,36 @@ UINT_8 spi_send_cmd(UINT_8 cmd)
     UINT_8 result;
     bcm2835_gpio_clr(RPI_GPIO_P1_22); //CS1
     result = bcm2835_spi_transfer(cmd);
-    bcm2835_delay(10);
+    bcm2835_delay(1);
     bcm2835_gpio_set(RPI_GPIO_P1_22); //CS1
     return result;
 }
 
-UINT_8 spi_read_data()
+UINT_8 spi_read_data(UINT_8 numchs,UINT_8 gpio,UINT_8* chData)
 {
-    UINT_8 header,data;
+    UINT_8 iter;
     bcm2835_gpio_clr(RPI_GPIO_P1_22); //CS1
-    bcm2835_spi_transfer(RDATA);
-    bcm2835_delayMicroseconds(5);
-    header = bcm2835_spi_transfer(0x00);
-    printf("Received Header is %X\n",header);
-    printf("The 2 header is %X\n",bcm2835_spi_transfer(0x00));
-    printf("The 3 header is %X\n",bcm2835_spi_transfer(0x00));
-    data = bcm2835_spi_transfer(0x00);
-    printf("Received data is %X\n",data);
-    printf("The 2 data is %X\n",bcm2835_spi_transfer(0x00));
-    printf("The 3 data is %X\n",bcm2835_spi_transfer(0x00));
-    printf("The 4 data is %X\n",bcm2835_spi_transfer(0x00));
-    printf("The 5 data is %X\n",bcm2835_spi_transfer(0x00));
-    bcm2835_delayMicroseconds(5);
-    bcm2835_delayMicroseconds(1);
+    if(gpio)
+    {
+        for(iter=0;iter<(numchs+gpio)*3;iter++)
+        {
+            chData[iter] = bcm2835_spi_transfer(0);
+            printf("The channel data is %X\n",chData[iter]);
+        }
+    }
+    else
+    {
+        bcm2835_spi_transfer(0);
+        bcm2835_spi_transfer(0);
+        bcm2835_spi_transfer(0);
+        for(iter=0;iter<(numchs)*3;iter++)
+        {
+            chData[iter] = bcm2835_spi_transfer(0);
+            printf("The channel data of %d is %X\n",iter,chData[iter]);
+            usleep(270);
+        }        
+    }
+    sleep(1);
     bcm2835_gpio_set(RPI_GPIO_P1_22); //CS1
     return 0;
 };

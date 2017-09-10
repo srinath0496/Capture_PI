@@ -4,10 +4,12 @@
 #include "bcm2835.h"
 #include "typedef.h"
 #include "Capture_main.h"
+#include "ADS1298.h"
 void main()
 {
-    UINT_8 recv_buf;
+    UINT_8 recv_buf,data;
     UINT_8 option,chset;
+    UINT_16 i=0;
     printf("Ram Medical Monitors\n");
     /* BCM driver Initialise*/
     if(bcm_driver_init())
@@ -29,30 +31,30 @@ void main()
             switch(option)
             {
                 case 1:
-                            printf("The Dev ID is %X\n",spi_read_byte(0x00));
+                            printf("The Dev ID is %X\n",spi_read_byte(ID));
                             break;
                 case 2:
-                            spi_write_byte(CONFIG1,SAMP_500_SPS);
-                            bcm2835_delay(1);
-                            spi_write_byte(CONFIG2,0x33);
-                            bcm2835_delay(1000);
-                            //spi_write_byte(CONFIG2,0xA3);
-                                spi_write_byte(CH1SET,0x05);
-                                chset = spi_read_byte(0x12);
-                                printf("The read Channel 1 is %x\n",chset);
-                                chset = spi_read_byte(0x13);
-                                printf("The read Channel 1 is %x\n",chset);
+                            ads1298_chan_setup(1,1,1);
+                            bcm2835_delay(5);
                             break;
                 case 3:
-                            bcm2835_gpio_set(RPI_GPIO_P1_18);  //SPI_START
+                            //cm2835_gpio_set(RPI_GPIO_P1_18);  //SPI_START
+                            spi_send_cmd(RDATAC);
                             bcm2835_delay(5);
                             break;
                 case 4:
-                            bcm2835_gpio_clr(RPI_GPIO_P1_18);  //SPI_START
+                            //cm2835_gpio_clr(RPI_GPIO_P1_18);  //SPI_START
+                            spi_send_cmd(RDATA);
                             bcm2835_delay(5);
                             break;
                 case 5:
-                            spi_read_data();
+                            spi_read_data(8,1,&data);
+                            while(data!=NULL)
+                            {
+                                printf("The Length of the data is %X\n",data[i++]);
+                            }
+                            
+                            bcm2835_delay(5);
                             break;
                     case 6:
                                 bcm2835_close();
@@ -104,7 +106,7 @@ UINT_8 spi_init()
         printf("Configuring the SPI interface");
         bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
         bcm2835_spi_setDataMode(BCM2835_SPI_MODE1);
-        bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_512);
+        bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_32);
         //bcm2835_spi_chipSelect(BCM2835_SPI_CS0);
         //bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0,LOW);
         bcm2835_delay(1);
@@ -130,5 +132,26 @@ UINT_8 ads1298_init()
 {
     spi_send_cmd(SDATAC);
     bcm2835_delay(10);
+    return 0;
+}
+
+UINT_8 ads1298_chan_setup(UINT_8 numChs,UINT_8 max_numChs,UINT_8 intTest)
+{
+    UINT_8 RLD_bits = 0,iter;
+    spi_write_byte(GPIO,0x00);
+    spi_write_byte(CONFIG1,HIGH_RES_1k_SPS);
+    if(intTest)
+    {
+        spi_write_byte(CONFIG2,CONFIG2_const | INT_TEST_1HZ | TEST_AMP);
+        for(iter=0;iter<numChs;++iter)
+        {
+            spi_write_byte(CH1SET+iter,TEST_SIGNAL | GAIN_X12);
+        }
+        for(iter=numChs;iter<max_numChs;++iter)
+        {
+            spi_write_byte(CH1SET+iter,PD_CH | SHORTED);
+        }
+    }
+    spi_write_byte(CONFIG3,PD_REFBUF | CONFIG3_const);
     return 0;
 }
