@@ -34,7 +34,7 @@ void main()
                             printf("The Dev ID is %X\n",spi_read_byte(ID));
                             break;
                 case 2:
-                            ads1298_chan_setup(1,1,1);
+                            ads1298_chan_setup(8,8,1);
                             bcm2835_delay(5);
                             break;
                 case 3:
@@ -44,15 +44,18 @@ void main()
                             break;
                 case 4:
                             //cm2835_gpio_clr(RPI_GPIO_P1_18);  //SPI_START
-                            spi_send_cmd(RDATA);
+                            ads1298_chan_setup(8,8,0);
                             bcm2835_delay(5);
                             break;
                 case 5:
+                //spi_send_cmd(RDATAC);
+                bcm2835_delay(5);
+                            for(i=0;i<60;i++)
                             spi_read_data(8,1,&data);
-                            while(data!=NULL)
+                       /*     while(data!=NULL)
                             {
                                 printf("The Length of the data is %X\n",data[i++]);
-                            }
+                            }*/
                             
                             bcm2835_delay(5);
                             break;
@@ -106,7 +109,7 @@ UINT_8 spi_init()
         printf("Configuring the SPI interface");
         bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
         bcm2835_spi_setDataMode(BCM2835_SPI_MODE1);
-        bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_32);
+        bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_64);
         //bcm2835_spi_chipSelect(BCM2835_SPI_CS0);
         //bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0,LOW);
         bcm2835_delay(1);
