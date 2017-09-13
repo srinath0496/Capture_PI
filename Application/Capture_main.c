@@ -203,17 +203,7 @@ void print_config(UINT_8 config_type,UINT_8 reg_Buffer)
                                 maxBit = maxBit /2;
                                 bitOffset--;
                             }
-                           
-                            /*
-                            printf("%s:%d\n",ads_reg_lable[config_type][0],(reg_Buffer&0x80)>>7);
-                            printf("%s:%d\n",ads_reg_lable[config_type][1],(reg_Buffer&0x40)>>6);
-                            printf("%s:%d\n",ads_reg_lable[config_type][2],(reg_Buffer&0x20)>>5);
-                            printf("%s:%d\n",ads_reg_lable[config_type][3],(reg_Buffer&0x10)>>4);
-                            printf("%s:%d\n",ads_reg_lable[config_type][4],(reg_Buffer&0x08)>>3);
-                            printf("%s:%d\n",ads_reg_lable[config_type][5],(reg_Buffer&0x04)>>2);
-                            printf("%s:%d\n",ads_reg_lable[config_type][6],(reg_Buffer&0x02)>>1);
-                            printf("%s:%d\n",ads_reg_lable[config_type][7],(reg_Buffer&0x01));*/
-
+                          
 }
 
 /*void set_config(UINT_8 config_type,UINT_8 reg_Buffer)
