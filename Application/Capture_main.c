@@ -5,6 +5,27 @@
 #include "typedef.h"
 #include "Capture_main.h"
 #include "ADS1298.h"
+
+char ads_reg_lable[4][9][50] =  {
+                {"","","","","","","","","DUMMY"},
+                {"HR","DAISY_EN_N","CLK_EN","RESERVED","RESERVED","DR2","DR1","DR0","CONFIG1"},
+                {"RESERVED","RESERVED","WCT_CHOP","INT_TEST","RESERVED","TEST_AMP","TEST_FREQ1","TEST_FREQ0","CONFIG2"},
+                {"PD_REFBUF_N","RESERVED","VREF_4V","RLD_MEAS","RLDREF_INT","PD_RLD_N","RLD_LOFF_SENS","RLD_STAT","CONFIG3"}
+};
+char menu_itens[10][50] = {
+                            "",
+                            "Read Device ID",
+                            "Display all ADS Registers",
+                            "Set ADS Registers",
+                            "Channel SelfTest",
+                            "Start Continous Read",
+                            "Stop Continous Read",
+                            "Single Data Read",
+                            "Read ADS Channels",
+                            "Exit"
+};
+
+
 void main()
 {
     UINT_8 recv_buf,data;
@@ -26,7 +47,8 @@ void main()
         while(1)
         {
             printf("Main Menu\n");
-            printf("1. Device ID\n2.Configure Channel\n3.Start SPI_START\n4.Stop SPI_START\n5.Read Channel Data\n6.Exit\n");
+            for(i=1;i<10;i++)
+            printf("%d.%s\n",i,menu_itens[i]);
             scanf("%d",&option);
             switch(option)
             {
@@ -34,35 +56,42 @@ void main()
                             printf("The Dev ID is %X\n",spi_read_byte(ID));
                             break;
                 case 2:
+                            print_config(TYPE_CONFIG1,spi_read_byte(CONFIG1));
+                            //sleep(1);
+                            print_config(TYPE_CONFIG2,spi_read_byte(CONFIG2));
+                            //sleep(1);
+                            print_config(TYPE_CONFIG3,spi_read_byte(CONFIG3));
+                            break;
+                case 4:
                             ads1298_chan_setup(8,8,1);
                             bcm2835_delay(5);
                             break;
-                case 3:
+                case 5:
                             //cm2835_gpio_set(RPI_GPIO_P1_18);  //SPI_START
                             spi_send_cmd(RDATAC);
                             bcm2835_delay(5);
                             break;
-                case 4:
-                            //cm2835_gpio_clr(RPI_GPIO_P1_18);  //SPI_START
-                            ads1298_chan_setup(8,8,0);
+                case 6:
+                            //cm2835_gpio_set(RPI_GPIO_P1_18);  //SPI_START
+                            spi_send_cmd(SDATAC);
                             bcm2835_delay(5);
                             break;
-                case 5:
+                case 7:
+                            //cm2835_gpio_set(RPI_GPIO_P1_18);  //SPI_START
+                            spi_send_cmd(RDATA);
+                            bcm2835_delay(5);
+                            break;
+                case 8:
                 //spi_send_cmd(RDATAC);
                 bcm2835_delay(5);
-                            for(i=0;i<60;i++)
+                            for(i=0;i<6;i++)
                             spi_read_data(8,1,&data);
-                       /*     while(data!=NULL)
-                            {
-                                printf("The Length of the data is %X\n",data[i++]);
-                            }*/
-                            
+                           
                             bcm2835_delay(5);
                             break;
-                    case 6:
+                 case 9:
                                 bcm2835_close();
                                 exit(1);
-                    case 7:
 
                 default:
                             break;
@@ -141,11 +170,14 @@ UINT_8 ads1298_init()
 UINT_8 ads1298_chan_setup(UINT_8 numChs,UINT_8 max_numChs,UINT_8 intTest)
 {
     UINT_8 RLD_bits = 0,iter;
+    union STR_CONFIG_1 config1_reg;
     spi_write_byte(GPIO,0x00);
     spi_write_byte(CONFIG1,HIGH_RES_1k_SPS);
+    print_config(TYPE_CONFIG1,spi_read_byte(CONFIG1));
     if(intTest)
     {
         spi_write_byte(CONFIG2,CONFIG2_const | INT_TEST_1HZ | TEST_AMP);
+        print_config(TYPE_CONFIG2,spi_read_byte(CONFIG2));
         for(iter=0;iter<numChs;++iter)
         {
             spi_write_byte(CH1SET+iter,TEST_SIGNAL | GAIN_X12);
@@ -158,3 +190,49 @@ UINT_8 ads1298_chan_setup(UINT_8 numChs,UINT_8 max_numChs,UINT_8 intTest)
     spi_write_byte(CONFIG3,PD_REFBUF | CONFIG3_const);
     return 0;
 }
+
+void print_config(UINT_8 config_type,UINT_8 reg_Buffer)
+{
+    UINT_8 maxBit = 0x80;
+    UINT_8 bitOffset=7;
+    UINT_8 i;
+                            printf("ADS1298 %s REGISTER\n",ads_reg_lable[config_type][8]);
+                            for(i=0;i<8;i++)
+                            {
+                                printf("1%s:%d\n",ads_reg_lable[config_type][i],(reg_Buffer&maxBit)>>bitOffset);
+                                maxBit = maxBit /2;
+                                bitOffset--;
+                            }
+                           
+                            /*
+                            printf("%s:%d\n",ads_reg_lable[config_type][0],(reg_Buffer&0x80)>>7);
+                            printf("%s:%d\n",ads_reg_lable[config_type][1],(reg_Buffer&0x40)>>6);
+                            printf("%s:%d\n",ads_reg_lable[config_type][2],(reg_Buffer&0x20)>>5);
+                            printf("%s:%d\n",ads_reg_lable[config_type][3],(reg_Buffer&0x10)>>4);
+                            printf("%s:%d\n",ads_reg_lable[config_type][4],(reg_Buffer&0x08)>>3);
+                            printf("%s:%d\n",ads_reg_lable[config_type][5],(reg_Buffer&0x04)>>2);
+                            printf("%s:%d\n",ads_reg_lable[config_type][6],(reg_Buffer&0x02)>>1);
+                            printf("%s:%d\n",ads_reg_lable[config_type][7],(reg_Buffer&0x01));*/
+
+}
+
+/*void set_config(UINT_8 config_type,UINT_8 reg_Buffer)
+{
+    UINT_8 valueSet;
+    union 
+
+                            printf("ADS1298 %s REGISTER\n",ads_reg_lable[config_type][8]);
+                            printf("%s:%d\t To Change Press (1/0). To Cancel Press Return\t",ads_reg_lable[config_type][0],(reg_Buffer&0x80)>>7);
+                            if((getchar()!='\n')
+                            {
+                                struct
+                            }
+                            printf("%s:%d\n",ads_reg_lable[config_type][1],(reg_Buffer&0x40)>>6);
+                            printf("%s:%d\n",ads_reg_lable[config_type][2],(reg_Buffer&0x20)>>5);
+                            printf("%s:%d\n",ads_reg_lable[config_type][3],(reg_Buffer&0x10)>>4);
+                            printf("%s:%d\n",ads_reg_lable[config_type][4],(reg_Buffer&0x08)>>3);
+                            printf("%s:%d\n",ads_reg_lable[config_type][5],(reg_Buffer&0x04)>>2);
+                            printf("%s:%d\n",ads_reg_lable[config_type][6],(reg_Buffer&0x02)>>1);
+                            printf("%s:%d\n",ads_reg_lable[config_type][7],(reg_Buffer&0x01));
+
+}*/
