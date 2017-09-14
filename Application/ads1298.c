@@ -55,9 +55,9 @@ UINT_8 spi_read_data(UINT_8 numchs,UINT_8 gpio,UINT_8* chData)
         startBit = bcm2835_spi_transfer(0);
         loffStatP = bcm2835_spi_transfer(0);
         loffStatN = bcm2835_spi_transfer(0);
-       // printf("The StartBit is %X\n",startBit);
-//printf("The LED OFF Positive Status is %X\n",loffStatP);
-//printf("The LED OFF Negative Status is %X\n",loffStatN);
+        printf("TELEGRAM_START_CODE---> %X\n",startBit);
+        printf("LEAD OFF POSITIVE-----> %X\n",loffStatP);
+        printf("LEAD OFF NEGATIVE-----> %X\n",loffStatN);
         delayMicroseconds(100);
         for(iter=0;iter<(numchs);iter++)
         {
@@ -67,7 +67,7 @@ UINT_8 spi_read_data(UINT_8 numchs,UINT_8 gpio,UINT_8* chData)
             delayMicroseconds(100);
             data3 = bcm2835_spi_transfer(0);
             channelData = (data1<<16) | (data2<<8) | (data3);//&data2<<16&data3<<8;
-            printf("%d\t",channelData);
+            printf("CHANNEL%d DATA---------> %X\n",iter+1,channelData);
         }
         printf("\n");
     }

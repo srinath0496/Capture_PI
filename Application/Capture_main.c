@@ -111,11 +111,9 @@ void main()
                             break;
                 case 8:
                 //spi_send_cmd(RDATAC);
-                bcm2835_delay(5);
-                            for(i=0;i<6;i++)
+                           
                             spi_read_data(8,1,&data);
                            
-                            bcm2835_delay(5);
                             break;
                  case 9:
                                 bcm2835_close();
