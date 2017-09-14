@@ -8,8 +8,10 @@ AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_RANLIB
 # Checks for programs.
-AC_PROG_CC
+AC_PROG_CC(gcc)
+CFLAGS="$CFLAGS -Wall -g"
 
+AC_SUBST(CFLAGS)
 # Checks for libraries.
 
 # Checks for header files.

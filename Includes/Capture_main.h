@@ -13,9 +13,13 @@ UINT_8 spi_send_cmd(UINT_8 cmd);
 UINT_8 spi_read_data(UINT_8 numchs,UINT_8 gpio,UINT_8* chData);
 UINT_8 ads1298_chan_setup(UINT_8 numChs,UINT_8 max_numChs,UINT_8 intTest);
 void print_config(UINT_8 config_type,UINT_8 reg_Buffer);
+UINT_8 set_config(UINT_8 config_type,UINT_8 reg_Buffer);
+void registry_menu(UINT_8 operation);
 #define TYPE_CONFIG1 1
 #define TYPE_CONFIG2 2
 #define TYPE_CONFIG3 3
+#define REG_READ 1
+#define REG_WRITE 2
 //UINT_8 spi_read(UINT_8* data);
 
 union STR_CONFIG_1

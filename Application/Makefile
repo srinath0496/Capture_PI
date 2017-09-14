@@ -168,7 +168,7 @@ AUTOMAKE = ${SHELL} /home/optimusprime/Projects/Monitor/Capture_PI/missing autom
 AWK = mawk
 CC = arm-linux-gnueabihf-gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -g -O2 -Wall -g
 CPP = arm-linux-gnueabihf-gcc -E
 CPPFLAGS = 
 CYGPATH_W = echo

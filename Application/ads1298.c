@@ -8,6 +8,7 @@
 UINT_8 spi_write_byte(UINT_8 reg_addr, UINT_8 value)
 {
     bcm2835_gpio_clr(RPI_GPIO_P1_22); //CS1
+    bcm2835_delayMicroseconds(100);
     bcm2835_spi_transfer(0x40 | reg_addr);
     bcm2835_delayMicroseconds(5);
     bcm2835_spi_transfer(0x00);
@@ -48,6 +49,7 @@ UINT_8 spi_read_data(UINT_8 numchs,UINT_8 gpio,UINT_8* chData)
     UINT_8 iter,startBit,loffStatP,loffStatN,data1,data2,data3;
     int channelData;
     bcm2835_gpio_clr(RPI_GPIO_P1_22); //CS1
+    delayMicroseconds(300);
     if(gpio)
     {
         startBit = bcm2835_spi_transfer(0);
